@@ -1,0 +1,23 @@
+require './ttt'
+
+
+
+describe Move do
+  let(:player)
+  it '' do
+    expect(player.comp_play).to eq()
+  end
+end
+
+describe Winner do
+  let(:board) { Winner.new }
+  it 'has 3 matching in a row' do #use all_same? to include x or o
+    expect(board.row).to eq(['X', 'X', 'X'] || ['O', 'O', 'O'])
+  end
+  it 'has 3 matching in a column' do #use array locations to match
+    expect(board.column).to eq([[0,0],[0,1],[0,2]] || [[1,0],[1,1],[1,2]] || [[2,0],[2,1],[2,2]])
+  end
+  it 'has 3 matching in a diagonal' do #same as column applied to other locations
+    expect(board.diagonal).to eq([[0,0],[1,1],[2,2]] || [[2,0],[1,1],[0,2]])
+  end
+end
