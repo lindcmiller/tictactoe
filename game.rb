@@ -18,7 +18,7 @@ class Game
     if user.first_player == "y"
       active_player = user
       user.take_turn(game.board)
-    else ## why is computer not taking its turn until a block move? ##
+    else 
       active_player = computer
       computer.take_turn(game.board)
     end
@@ -33,11 +33,11 @@ class Game
     # game over
     game.board.set_board
     if game.board.has_won == false
-      puts "We tied. I am undefeatable yet again."
+      puts "\n\nWe tied. I am undefeatable yet again."
     elsif active_player.computer == true
-      puts "YOU LOSE."
+      puts "\n\nYOU LOSE."
     else
-      puts "Improbably, you have won. This is not ideal. Good day."
+      puts "\n\nImprobably, you have won. This is not ideal. Good day."
     end
 
   end

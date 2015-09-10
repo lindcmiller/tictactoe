@@ -7,9 +7,14 @@ class Turn
   def self.take_turn(player, board)
     if player.user == true
       board.set_board
-      puts "\n\nWhere would you like to play your letter?" ## why 2 new lines? ##
+      puts "\n\n Where would you like to play your letter?" ## why 2 new lines? ##
       position = gets.chomp
-      board.mark_position(position, player.letter)
+      if /[0-8]/.match(position)
+        board.mark_position(position, player.letter)
+      else
+        puts "\n NOPE. Try again. \n\n"
+        self.take_turn(player, board)
+      end
     else
       computer_turn(board)
     end
@@ -29,10 +34,8 @@ class Turn
       board.claim_position(board.winning_move('O').first, 'O')
     elsif !board.winning_move('X').empty?
       board.claim_position(board.winning_move('X').first, 'O')
-    elsif
-      if !["X", "O"].include?(board.grid.flatten[4])
+    elsif !["X", "O"].include?(board.grid.flatten[4])
         board.mark_position("4", 'O')
-      end
     elsif
       if board.grid.flatten[8] == "X" && !["X", "O"].include?(board.grid.flatten[0])
         board.mark_position("0",'O')
