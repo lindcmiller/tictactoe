@@ -13,8 +13,8 @@ class Player
     end
   end
 
-  def take_turn(grid)
-    Turn.take_turn(self, grid)
+  def take_turn(board)
+    Turn.take_turn(self, board)
   end
 
   def first_player

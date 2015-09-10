@@ -26,33 +26,35 @@ class Turn
 
   def self.computer_turn(board) # use case & when/then statements?
     if !board.winning_move('O').empty?
-      board.claim_position(board.winning_move('O').first, 'O')d
-      board.claim_position(board.winning_move('X').first, 'X')
-
-    elsif if !board.winning_move('O').empty? #corner
-      board.claim_position(board.winning_move(6).first, 'O')
+      board.claim_position(board.winning_move('O').first, 'O')
     elsif !board.winning_move('X').empty?
-      board.claim_position(board.winning_move(6).first, 'X')
-
-    elsif if !board.winning_move('O').empty? #corner
-      board.claim_position(board.winning_move(8).first, 'O')
-    elsif !board.winning_move('X').empty?
-      board.claim_position(board.winning_move(8).first, 'X')
-
-    elsif if !board.winning_move('O').empty? #corner
-      board.claim_position(board.winning_move(2).first, 'O')
-    elsif !board.winning_move('X').empty?
-      board.claim_position(board.winning_move(2).first, 'X')
-
-    elsif if !board.winning_move('O').empty? #corner
-      board.claim_position(board.winning_move(0).first, 'O')
-    elsif !board.winning_move('X').empty?
-      board.claim_position(board.winning_move(0).first, 'X')
-
-    elsif !board.winning_move('O').empty? #center
-      board.claim_position(board(4), 'O')
-    else !board.winning_move('X').empty?
-        board.claim_position(board(4), 'X')
+      board.claim_position(board.winning_move('X').first, 'O')
+    elsif
+      if !["X", "O"].include?(board.grid.flatten[4])
+        board.mark_position("4", 'O')
+      end
+    elsif
+      if board.grid.flatten[8] == "X" && !["X", "O"].include?(board.grid.flatten[0])
+        board.mark_position("0",'O')
+      elsif board.grid.flatten[6] == "X" && !["X", "O"].include?(board.grid.flatten[2])
+        board.mark_position("2",'O')
+      elsif board.grid.flatten[0] == "X" && !["X", "O"].include?(board.grid.flatten[8])
+        board.mark_position("8",'O')
+      elsif board.grid.flatten[2] == "X" && !["X", "O"].include?(board.grid.flatten[2])
+        board.mark_position("6",'O')
+      end
+    elsif
+      if !["X", "O"].include?(board.grid.flatten[8])
+        board.mark_position("8", 'O')
+      elsif !["X", "O"].include?(board.grid.flatten[6])
+        board.mark_position("6", 'O')
+      elsif !["X", "O"].include?(board.grid.flatten[2])
+        board.mark_position("2", 'O')
+      else !["X", "O"].include?(board.grid.flatten[0])
+        board.mark_position("0", 'O')
+      end
+    else
+      puts "NOPE."
     end
   end
 
@@ -81,7 +83,11 @@ private
   end
 
   def block_fork
+    if 0 == 0 || 2 == 2 || 6 == 6 || 8 == 8
+      i.delete_at(i)
+      i << computer.letter
+    end
   end
 end
 
-# Turn.new
+Turn.new

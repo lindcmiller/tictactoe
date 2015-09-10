@@ -4,10 +4,10 @@ require './turn'
 require 'pry'
 
 class Game
-  attr_accessor :grid, :set_board, :computer, :user, :letter, :first_player, :take_turn, :map_to_board, :board_status, :has_won, :next_player
+  attr_accessor :board, :set_board, :computer, :user, :letter, :first_player, :take_turn, :map_to_board, :board_status, :has_won, :next_player
 
   def initialize
-    @grid = Board.new
+    @board = Board.new
   end
 
   def self.run
@@ -17,23 +17,25 @@ class Game
 
     if user.first_player == "y"
       active_player = user
-      user.take_turn(game.grid)
-
+      user.take_turn(game.board)
     else ## why is computer not taking its turn until a block move? ##
       active_player = computer
-      computer.take_turn(game.grid)
+      computer.take_turn(game.board)
     end
 
-    while game.grid.has_won == false
+    turn_counter = 0
+    while game.board.has_won == false && turn_counter < 9
       active_player = active_player.computer == true ? user : computer
-      active_player.take_turn(game.grid)
+      active_player.take_turn(game.board)
+      turn_counter += 1
     end
 
     # game over
-    if active_player.computer == true
+    game.board.set_board
+    if game.board.has_won == false
+      puts "We tied. I am undefeatable yet again."
+    elsif active_player.computer == true
       puts "YOU LOSE."
-    elsif grid.flatten.uniq.size < 2 # for tie
-      puts "Welp, we have no winners here."
     else
       puts "Improbably, you have won. This is not ideal. Good day."
     end
