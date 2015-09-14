@@ -31,56 +31,50 @@ class Turn
       board.claim_position(board.winning_move('O').first, 'O')
     elsif !board.winning_move('X').empty?
       board.claim_position(board.winning_move('X').first, 'O')
-    elsif board.grid.flatten[2] == "X" && !["X", "O"].include?(board.grid.flatten[6])
-      board.mark_position("6",'O')  
-    elsif !["X", "O"].include?(board.grid.flatten[4]) # center space
-      board.mark_position("4", 'O')
-    elsif board.grid.flatten[1] == "X" && !["X", "O"].include?(board.grid.flatten[0])
+
+    elsif board.grid.flatten[4] == "X" && !["X", "O"].include?(board.grid.flatten[0])
       board.mark_position("0",'O')
-    elsif board.grid.flatten[2] == "X" && !["X", "O"].include?(board.grid.flatten[8])
+    elsif board.grid.flatten[0] == "O" && !["X", "O"].include?(board.grid.flatten[8])
       board.mark_position("8",'O')
-    elsif board.grid.flatten[0] == "X" && !["X", "O"].include?(board.grid.flatten[3])
-      board.mark_position("3",'O')
-    elsif board.grid.flatten[6] == "X" && !["X", "O"].include?(board.grid.flatten[0])
-      board.mark_position("0",'O')
-    elsif board.grid.flatten[6] == "X" && !["X", "O"].include?(board.grid.flatten[2])
-      board.mark_position("2",'O')
-    elsif board.grid.flatten[8] == "X" && !["X", "O"].include?(board.grid.flatten[4])
-      board.mark_position("4",'O')
-    elsif board.grid.flatten[8] == "X" && !["X", "O"].include?(board.grid.flatten[0])
-      board.mark_position("0",'O')
-    elsif board.grid.flatten[8] == "X" && !["X", "O"].include?(board.grid.flatten[2])
-      board.mark_position("2",'O')
-    elsif board.grid.flatten[8] == "X" && !["X", "O"].include?(board.grid.flatten[5])
-      board.mark_position("5",'O')
-    elsif board.grid.flatten[0] == "X" && !["X", "O"].include?(board.grid.flatten[3])
-      board.mark_position("3",'O')
-    elsif board.grid.flatten[3] == "X" && !["X", "O"].include?(board.grid.flatten[0])
-      board.mark_position("0",'O')
+
+    # center space
+    elsif !["X", "O"].include?(board.grid.flatten[4])
+      board.mark_position("4", 'O')
+    # elsif !["X", "O"].include?(board.grid.flatten[6])
+    # board.mark_position("6", 'O')
+
+      # corners
     elsif board.grid.flatten[0] == "X" && !["X", "O"].include?(board.grid.flatten[8])
       board.mark_position("8",'O')
-    # elsif # plays empty corner
-    #   if !["X", "O"].include?(board.grid.flatten[8])
-    #     board.mark_position("8", 'O')
-    #   elsif !["X", "O"].include?(board.grid.flatten[6])
-    #     board.mark_position("6", 'O')
-    #   elsif !["X", "O"].include?(board.grid.flatten[2])
-    #     board.mark_position("2", 'O')
-    #   elsif !["X", "O"].include?(board.grid.flatten[0])
-    #     board.mark_position("0", 'O')
-    #   end
-    elsif # plays empty edge
-      if !["X", "O"].include?(board.grid.flatten[1])
-        board.mark_position("1", 'O')
-      elsif !["X", "O"].include?(board.grid.flatten[5])
-        board.mark_position("5", 'O')
-      elsif !["X", "O"].include?(board.grid.flatten[7])
-        board.mark_position("7", 'O')
-      elsif !["X", "O"].include?(board.grid.flatten[3])
-        board.mark_position("3", 'O')
-      end
+    elsif board.grid.flatten[2] == "X" && !["X", "O"].include?(board.grid.flatten[6])
+      board.mark_position("6",'O')
+    elsif board.grid.flatten[6] == "X" && !["X", "O"].include?(board.grid.flatten[2])
+      board.mark_position("2",'O')
+    elsif board.grid.flatten[8] == "X" && !["X", "O"].include?(board.grid.flatten[0])
+      board.mark_position("0",'O')
+
+    # corner filled, take edge of untouching sides (opponent)
+  elsif board.grid.flatten[2] == "X" && !["X", "O"].include?(board.grid.flatten[7])
+      board.mark_position("7",'O')
+    elsif board.grid.flatten[2] == "X" && !["X", "O"].include?(board.grid.flatten[3])
+      board.mark_position("3",'O')
+
+    elsif board.grid.flatten[6] == "X" && !["X", "O"].include?(board.grid.flatten[1])
+      board.mark_position("1",'O')
+    elsif board.grid.flatten[6] == "X" && !["X", "O"].include?(board.grid.flatten[5])
+      board.mark_position("5",'O')
+
+    elsif board.grid.flatten[8] == "X" && !["X", "O"].include?(board.grid.flatten[1])
+      board.mark_position("1",'O')
+    elsif board.grid.flatten[8] == "X" && !["X", "O"].include?(board.grid.flatten[3])
+      board.mark_position("3",'O')
+
+    elsif board.grid.flatten[0] == "X" && !["X", "O"].include?(board.grid.flatten[5])
+      board.mark_position("5",'O')
+    elsif board.grid.flatten[0] == "X" && !["X", "O"].include?(board.grid.flatten[7])
+      board.mark_position("7",'O')
     else
-      puts "NOPE."
+      puts "NOPE."  
     end
   end
 
