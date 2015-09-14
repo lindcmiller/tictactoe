@@ -1,5 +1,6 @@
 class Board
-  attr_reader :grid, :letter
+  attr_reader :grid
+  attr_accessor :letter
   def initialize
     @grid = [
       ['0', '1', '2'],
@@ -130,7 +131,7 @@ class Board
     (0..2).each do |i|
       temp_array = array.dup #don't mess up our original row
       element = temp_array.delete_at(i) #take the element in question out of the row
-      if temp_array.uniq.size == 1 && temp_array.uniq[0] == letter #if everything left in the row is the same    ## if statements on if statements?
+      if temp_array.uniq.size == 1 && temp_array.uniq[0] == letter #if everything left in the row is the same
         if !(array[i] =~ /\d/).nil? #and if the element in question is a digit
           return i #return the coordinates of the element in question
         end

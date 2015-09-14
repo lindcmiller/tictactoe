@@ -20,10 +20,11 @@ class Player
   def first_player
     puts "Would you like to make the first move? (y/n)"
     @first_player = gets.chomp
-    while !(/[yn]/.match(@first_player))
+    while !(/^[yn]$/.match(@first_player))
       puts "\n NOPE. Simply not an option. \n\n"
       puts "Would you like to make the first move? (y/n)"
       @first_player = gets.chomp
     end
+    @first_player
   end
 end
