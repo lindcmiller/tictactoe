@@ -70,10 +70,6 @@ class Board
       below = [y + 1,x]
       left = [y,x - 1]
       right = [y,x + 1]
-      #upleft = [y - 1,x - 1]
-      #upright = [y - 1,x + 1]
-      #downleft = [y + 1,x - 1]
-      #downright = [y + 1,x + 1]
 
       all_adj = [above,below,left,right]
       adjacent = all_adj.reject {|a,b| a < 0 || b < 0 || a > 2 || b > 2}

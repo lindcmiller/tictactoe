@@ -27,28 +27,30 @@ class Turn
     !(/^[0-8]$/.match(position)).nil? && (/^[OX]$/.match(@board.flat[position.to_i])).nil?
   end
 
-  def self.computer_turn # use case & when/then statements?
+  def self.computer_turn
+# Win, if possible
     if can_win?('O')
       ai_win
-    elsif can_win?('X') # Block, if opponent is about to win
+ # Block, if opponent can win      
+    elsif can_win?('X')
       ai_block_opp
-#3) Fork: Create an opportunity where you can win in two ways.
+# Fork: Create an opportunity where you can win in two ways
     elsif about_to_get_fork?('O')
       take_empty_corner
-#4) Block Opponent's Fork
+# Block Opponent's Fork
     elsif about_to_get_fork?('X')
       make_opponent_block
-#5) Center: Play the center.
+# Center
     elsif @board.is_empty?(4)
       take_position("4")
-#6) Opposite Corner: If the opponent is in the corner, play the opposite corner.
-    elsif has_corner_and_opposite_is_free?('X')
+# Opposite Corner: If the opponent is in the corner, play the opposite corner
+    elsif has_corner_and_opposite_is_empty?('X')
       corner = @board.corner_position('X')
       take_opposite_corner(corner)
-#7) Empty Corner: Play an empty corner.
+# Empty Corner: Play an empty corner
     elsif @board.corner_available?
       take_empty_corner
-#8) Empty Side: Play an empty side.
+# Empty Side: Play an empty side
     elsif @board.is_empty?(1)
       take_position("1")
     elsif @board.is_empty?(5)
@@ -82,7 +84,7 @@ private
 
   class << self
     def can_win?(letter)
-      ! @board.winning_move(letter).empty?
+      !@board.winning_move(letter).empty?
     end
 
     def take_position(pos)
@@ -98,7 +100,7 @@ private
     end
 
     def has_corner?(letter)
-      ! @board.corner_position(letter).nil?
+      !@board.corner_position(letter).nil?
     end
 
     def take_empty_corner
@@ -120,12 +122,12 @@ private
     def about_to_get_fork?(letter)
       corner = @board.corner_position(letter)
       opposite_value = @board.position(@board.opposite_corner(corner))
-      ! corner.nil? && opposite_value == letter
+      !corner.nil? && opposite_value == letter
     end
 
-    def has_corner_and_opposite_is_free?(letter)
+    def has_corner_and_opposite_is_empty?(letter)
       corner = @board.corner_position(letter)
-      ! corner.nil? && @board.is_empty?(@board.opposite_corner(corner))
+      !corner.nil? && @board.is_empty?(@board.opposite_corner(corner))
     end
 
     def make_opponent_block
