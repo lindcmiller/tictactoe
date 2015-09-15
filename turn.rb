@@ -6,79 +6,57 @@ class Turn
   attr_accessor :user_turn, :computer_turn, :winning_move, :board
 
   def self.take_turn(player, board)
+    @board = board
     if player.user == true
-      board.set_board
+      @board.set_board
       puts "\n\n Where would you like to play your letter?"
       position = gets.chomp
-      if move_valid?(position, board)
-        board.mark_position(position, player.letter)
+      if move_valid?(position)
+        @board.mark_position(position, player.letter)
       else
         puts "\n NOPE. Try again. \n\n"
-        self.take_turn(player, board)
+        self.take_turn(player, @board)
       end
 
     else
-      computer_turn(board)
+      computer_turn
     end
   end
 
-  def self.move_valid?(position, board)
-    !(/^[0-8]$/.match(position)).nil? && (/^[OX]$/.match(board.grid.flatten[position.to_i])).nil?
+  def self.move_valid?(position)
+    !(/^[0-8]$/.match(position)).nil? && (/^[OX]$/.match(@board.flat[position.to_i])).nil?
   end
 
-  def self.computer_turn(board) # use case & when/then statements?
-    if !board.winning_move('O').empty?
-      board.claim_position(board.winning_move('O').first, 'O')
-    elsif !board.winning_move('X').empty?
-      board.claim_position(board.winning_move('X').first, 'O')
-    elsif board.grid.flatten[2] == "X" && !["X", "O"].include?(board.grid.flatten[6])
-      board.mark_position("6",'O')  
-    elsif !["X", "O"].include?(board.grid.flatten[4]) # center space
-      board.mark_position("4", 'O')
-    elsif board.grid.flatten[1] == "X" && !["X", "O"].include?(board.grid.flatten[0])
-      board.mark_position("0",'O')
-    elsif board.grid.flatten[2] == "X" && !["X", "O"].include?(board.grid.flatten[8])
-      board.mark_position("8",'O')
-    elsif board.grid.flatten[0] == "X" && !["X", "O"].include?(board.grid.flatten[3])
-      board.mark_position("3",'O')
-    elsif board.grid.flatten[6] == "X" && !["X", "O"].include?(board.grid.flatten[0])
-      board.mark_position("0",'O')
-    elsif board.grid.flatten[6] == "X" && !["X", "O"].include?(board.grid.flatten[2])
-      board.mark_position("2",'O')
-    elsif board.grid.flatten[8] == "X" && !["X", "O"].include?(board.grid.flatten[4])
-      board.mark_position("4",'O')
-    elsif board.grid.flatten[8] == "X" && !["X", "O"].include?(board.grid.flatten[0])
-      board.mark_position("0",'O')
-    elsif board.grid.flatten[8] == "X" && !["X", "O"].include?(board.grid.flatten[2])
-      board.mark_position("2",'O')
-    elsif board.grid.flatten[8] == "X" && !["X", "O"].include?(board.grid.flatten[5])
-      board.mark_position("5",'O')
-    elsif board.grid.flatten[0] == "X" && !["X", "O"].include?(board.grid.flatten[3])
-      board.mark_position("3",'O')
-    elsif board.grid.flatten[3] == "X" && !["X", "O"].include?(board.grid.flatten[0])
-      board.mark_position("0",'O')
-    elsif board.grid.flatten[0] == "X" && !["X", "O"].include?(board.grid.flatten[8])
-      board.mark_position("8",'O')
-    # elsif # plays empty corner
-    #   if !["X", "O"].include?(board.grid.flatten[8])
-    #     board.mark_position("8", 'O')
-    #   elsif !["X", "O"].include?(board.grid.flatten[6])
-    #     board.mark_position("6", 'O')
-    #   elsif !["X", "O"].include?(board.grid.flatten[2])
-    #     board.mark_position("2", 'O')
-    #   elsif !["X", "O"].include?(board.grid.flatten[0])
-    #     board.mark_position("0", 'O')
-    #   end
-    elsif # plays empty edge
-      if !["X", "O"].include?(board.grid.flatten[1])
-        board.mark_position("1", 'O')
-      elsif !["X", "O"].include?(board.grid.flatten[5])
-        board.mark_position("5", 'O')
-      elsif !["X", "O"].include?(board.grid.flatten[7])
-        board.mark_position("7", 'O')
-      elsif !["X", "O"].include?(board.grid.flatten[3])
-        board.mark_position("3", 'O')
-      end
+  def self.computer_turn # use case & when/then statements?
+    if can_win?('O')
+      ai_win
+    elsif can_win?('X') # Block, if opponent is about to win
+      ai_block_opp
+#3) Fork: Create an opportunity where you can win in two ways.
+    elsif about_to_get_fork?('O')
+      take_empty_corner
+#4) Block Opponent's Fork
+    elsif about_to_get_fork?('X')
+      make_opponent_block
+#5) Center: Play the center.
+    elsif @board.is_empty?(4)
+      take_position("4")
+#6) Opposite Corner: If the opponent is in the corner, play the opposite corner.
+    elsif has_corner_and_opposite_is_free?('X')
+      corner = @board.corner_position('X')
+      take_opposite_corner(corner)
+#7) Empty Corner: Play an empty corner.
+    elsif @board.corner_available?
+      take_empty_corner
+#8) Empty Side: Play an empty side.
+    elsif @board.is_empty?(1)
+      take_position("1")
+    elsif @board.is_empty?(5)
+      take_position("5")
+    elsif @board.is_empty?(7)
+      take_position("7")
+    elsif @board.is_empty?(3)
+      take_position("3")
     else
       puts "NOPE."
     end
@@ -99,6 +77,61 @@ private
       "8" => [2, 2]
     }
     mapping[turn]
+  end
+
+
+  class << self
+    def can_win?(letter)
+      ! @board.winning_move(letter).empty?
+    end
+
+    def take_position(pos)
+      @board.mark_position(pos, 'O')
+    end
+
+    def ai_win
+      @board.claim_position(@board.winning_move('O').first, 'O')
+    end
+
+    def ai_block_opp
+      @board.claim_position(@board.winning_move('X').first, 'O')
+    end
+
+    def has_corner?(letter)
+      ! @board.corner_position(letter).nil?
+    end
+
+    def take_empty_corner
+      if @board.is_empty?(8)
+        take_position("8")
+      elsif @board.is_empty?(6)
+        take_position("6")
+      elsif @board.is_empty?(2)
+        take_position("2")
+      elsif @board.is_empty?(0)
+        take_position("0")
+      end
+    end
+
+    def take_opposite_corner(corner)
+      take_position(@board.opposite_corner(corner))
+    end
+
+    def about_to_get_fork?(letter)
+      corner = @board.corner_position(letter)
+      opposite_value = @board.position(@board.opposite_corner(corner))
+      ! corner.nil? && opposite_value == letter
+    end
+
+    def has_corner_and_opposite_is_free?(letter)
+      corner = @board.corner_position(letter)
+      ! corner.nil? && @board.is_empty?(@board.opposite_corner(corner))
+    end
+
+    def make_opponent_block
+      our_positions = @board.letter_locations('O')
+      take_position(@board.empty_next_to(our_positions))
+    end
   end
 
 end
